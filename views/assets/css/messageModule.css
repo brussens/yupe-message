@@ -1,0 +1,25 @@
+.y-mess-item {
+    border-bottom:1px solid #EFEFEF;
+}
+.y-mess-item a {
+    display:inline-block;
+}
+.y-mess-item:hover {
+    cursor:pointer;
+    background:#eff0ef;
+}
+.items {
+    border-top:1px solid #EFEFEF;
+}
+.y-mess-no-read {
+    background:#f6f6f6;
+}
+.y-mess-no-read:hover {
+    background:#e2e7ed !important;
+}
+.y-mess-item .y-mess-buttons {
+    display:none;
+}
+.y-mess-item:hover .y-mess-buttons {
+    display:block;
+}
