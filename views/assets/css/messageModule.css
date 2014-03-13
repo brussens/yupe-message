@@ -17,9 +17,20 @@
 .y-mess-no-read:hover {
     background:#e2e7ed !important;
 }
-.y-mess-item .y-mess-buttons {
+.y-mess-item .btn-group,
+.y-mess-item .button-rem {
     display:none;
 }
-.y-mess-item:hover .y-mess-buttons {
-    display:block;
+.y-mess-item:hover .btn-group,
+.y-mess-item:hover .button-rem {
+    display:inline-block;
+}
+.y-mess-nickname-link {
+    text-transform: capitalize;
+}
+.list-view {
+    padding-top:0 !important;
+}
+hr.y-mess {
+    margin:5px 0;
 }

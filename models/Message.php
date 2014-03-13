@@ -1,7 +1,7 @@
 <?php
-
 /**
- * This is the model class for table "{{message_message}}".
+ * Основная модель модуля Message.
+ *
  *
  * The followings are the available columns in table '{{message_message}}':
  * @property string $id
@@ -14,22 +14,44 @@
  * @property integer $is_read
  * @property integer $sender_del
  * @property integer $recipient_del
- *
- * @property string $nick_name
- *
  * The followings are the available model relations:
  * @property UserUser $sender
  * @property UserUser $recipient
+ *
+ *
  */
 class Message extends CActiveRecord
 {
-    public $nick_name;
+    /**
+     * Константа статуса "Это спам"
+     */
     const SPAM=1;
+
+    /**
+     * Константа статуса "Это не спам"
+     */
     const NOT_SPAM=0;
+
+    /**
+     * Константа "Сообщение прочитано"
+     */
     const READ=1;
+
+    /**
+     * Константа "Сообщение не прочитано"
+     */
     const NOT_READ=0;
+
+    /**
+     * Константа "Сообщение удалено"
+     */
     const DROP=1;
+
+    /**
+     * Константа "Сообщение не удалено"
+     */
     const NOT_DROP=0;
+
 	/**
 	 * @return string the associated database table name
 	 */
@@ -46,17 +68,12 @@ class Message extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('body, subject, nick_name', 'required'),
-			array('sender_id, recipient_id, is_spam, is_read, sender_del, recipient_del', 'numerical', 'integerOnly'=>true),
+			array('body', 'required'),
+			array('sender_id, recipient_id, is_spam, is_read, sender_del, recipient_del, reply_to', 'numerical', 'integerOnly'=>true),
 			array('subject', 'length', 'max'=>150),
             array('send_date','default', 'value'=>new CDbExpression('NOW()')),
             array('sender_id','default', 'value'=>Yii::app()->user->id),
-            array('nick_name', 'recipientValidate'),
-            //array('recipient_id','default', 'value'=>2),
             array('body','filter', 'filter'=>array($obj=new CHtmlPurifier(),'purify')),
-			// The following rule is used by search().
-			// @todo Please remove those attributes that should not be searched.
-            array('nick_name', 'safe'),
 			array('id, subject, body, send_date, sender_id, recipient_id, is_spam, is_read, sender_del, recipient_del', 'safe', 'on'=>'search'),
 		);
 	}
@@ -85,12 +102,12 @@ class Message extends CActiveRecord
 			'body' => Yii::t('MessageModule.message', 'Content'),
 			'send_date' => Yii::t('MessageModule.message', 'Dispatch date'),
 			'sender_id' => Yii::t('MessageModule.message', 'Sender ID'),
-            'nick_name' => Yii::t('MessageModule.message', 'Recipient nickname'),
 			'recipient_id' => Yii::t('MessageModule.message', 'Recipient ID'),
 			'is_spam' => Yii::t('MessageModule.message', 'Marked by the recipient as "Spam"'),
 			'is_read' => Yii::t('MessageModule.message', 'Read by the recipient'),
 			'sender_del' => Yii::t('MessageModule.message', 'Deleted sender'),
 			'recipient_del' => Yii::t('MessageModule.message', 'Deleted recipient'),
+            'reply_to' => Yii::t('MessageModule.message', 'Parent message'),
 		);
 	}
 
@@ -122,19 +139,29 @@ class Message extends CActiveRecord
 		$criteria->compare('is_read',$this->is_read);
 		$criteria->compare('sender_del',$this->sender_del);
 		$criteria->compare('recipient_del',$this->recipient_del);
+        $criteria->compare('reply_to',$this->reply_to);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));
 	}
 
-    public function messageView($id) {
-        $message=$this->findByPk($id);
-        if($message->is_read==self::NOT_READ) {
-            $message->is_read=self::READ;
-            $message->update(array('is_read'));
+    /**
+     * @param $id
+     *
+     * @return CActiveRecord
+     *
+     * Метод для получения данных определённого сообщения.
+     */
+    public function messageView($id) {//Получаем id просматриваемого сообщения.
+        $message=$this->findByPk($id);//Получаем данные просматриваемого сообщения.
+        if($message->recipient_id===Yii::app()->user->id) {//Если его читает получатель
+            if(!$this->getIsRead()) {//Если получатель ещё не читал сообщение
+                $message->is_read=self::READ;//Делаем его прочитанным.
+                $message->update(array('is_read'));//Обновляем информацию о сообщении.
+            }
         }
-        return $message;
+        return $message;// И возращаем модель для дальнейшего показа сообщения.
     }
 
 	/**
@@ -149,48 +176,12 @@ class Message extends CActiveRecord
 	}
 
     /**
-     * Метод валидации пользователя по введённому nick_name
+     * @return string
+     *
+     * Метод получения количества непрочитанных входящих сообщений.
+     *
+     * Исп.: Message::model()->inboxcount;
      */
-    public function recipientValidate() {
-        //Вытаскиваем данные пользователя
-        $user=User::model()->findByAttributes(array('nick_name'=>$this->nick_name));
-        if($user) {//если такой пользователь существует
-            if(Yii::app()->user->id==$user->id) {//проверяем, не отправляет ли он сообщение самому себе
-                $this->addError('nick_name', Yii::t('MessageModule.message', 'You can not send messages to yourself'));//если отправляет себе, то выдаём ошибку валидации
-            }
-            else {//если отправляет другому пользователю
-                $this->recipient_id=$user->id;//записываем id получателя в соответствующее свойство
-            }
-        }
-        else {//если пользователя с введёным nick_name не существует
-            $this->addError('nick_name', Yii::t('MessageModule.message', 'This user does not exist'));//выдаём ошибку валидации
-        }
-    }
-
-    /**
-     * @param string $type = inbox, sent, spam, drop
-     * По умолчанию inbox
-     * Метод получения количества сообщений
-     * inbox - входящие
-     * sent - отправленные
-     * spam - помеченные пользователем, как спам.
-     * drop - помеченные пользователем, как удалённые.
-     */
-    public function countMessages() {
-        $stat=array();
-        $criteriaSpam = new CDbCriteria;
-        $criteriaSpam->condition = 'recipient_id = ' . Yii::app()->user->id;
-        $criteriaSpam->addCondition("is_spam = " . self::SPAM);
-        $criteriaSpam->addCondition("recipient_del = " . self::NOT_DROP);
-        $stat['spam']=$this->count($criteriaSpam);
-
-        $criteriaDrop = new CDbCriteria;
-        $criteriaDrop->condition = 'recipient_id = ' . Yii::app()->user->id;
-        $criteriaDrop->addCondition("recipient_del = " . self::DROP);
-        $stat['drop']=$this->count($criteriaDrop);
-
-        return $stat;
-    }
     public function getInboxcount() {
         $criteria= new CDbCriteria;
         $criteria->condition = 'recipient_id = ' . Yii::app()->user->id;
@@ -199,35 +190,38 @@ class Message extends CActiveRecord
         $criteria->addCondition("is_read = " . self::NOT_READ);
         return $this->count($criteria);
     }
+
+    /**
+     * @return string
+     *
+     * Метод получения количества отправленных сообщений.
+     *
+     * Исп.: Message::model()->outboxcount;
+     */
     public function getOutboxcount() {
         $criteria = new CDbCriteria;
         $criteria->condition = 'sender_id = ' . Yii::app()->user->id;
         $criteria->addCondition("sender_del = " . self::NOT_DROP);
         return $this->count($criteria);
     }
+
+    /**
+     * @return CActiveDataProvider
+     *
+     * Метод получения входящих сообщений.
+     *
+     * Исп.: Message::model()->inbox;
+     */
     public function getInbox() {
         $criteria = new CDbCriteria;
         $criteria->condition = 'recipient_id = ' . Yii::app()->user->id;
         $criteria->addCondition("is_spam = " . self::NOT_SPAM);
         $criteria->addCondition("recipient_del = " . self::NOT_DROP);
-        $criteria->with = array('sender'=>array('alias'=>'author'));
+        $criteria->with = array('sender');
         $criteria->order='send_date DESC';
         $dataProvider=new CActiveDataProvider($this, array(
             'pagination'=>array(
-                'pageSize'=>3,
-            ),
-            'criteria'=>$criteria,
-        ));
-        return $dataProvider;
-    }
-    public function getOutbox() {
-        $criteria = new CDbCriteria;
-        $criteria->condition = 'sender_id = ' . Yii::app()->user->id;
-        $criteria->addCondition("sender_del = " . self::NOT_DROP);
-        $criteria->order='send_date DESC';
-        $dataProvider=new CActiveDataProvider($this, array(
-            'pagination'=>array(
-                'pageSize'=>3,
+                'pageSize'=>Yii::app()->controller->module->messagePerPage,
             ),
             'criteria'=>$criteria,
         ));
@@ -235,55 +229,127 @@ class Message extends CActiveRecord
     }
 
     /**
-     * @param string $type = inbox, sent, spam, drop
-     * По умолчанию inbox
-     * Метод получения списка сообщений.
-     * inbox - входящие
-     * sent - отправленные
-     * spam - помеченные пользователем, как спам.
-     * drop - помеченные пользователем, как удалённые.
-     * @param boolean $dataProvider
-     * По умолчанию true
-     * При false возвращает criteria
+     * @return CActiveDataProvider
      *
+     * Метод получения отправленных сообщений.
+     *
+     * Исп.: Message::model()->outbox;
      */
-    public function giveMessages($type='inbox', $dataProvider=true) {
+    public function getOutbox() {
         $criteria = new CDbCriteria;
-        switch ($type) {
-            case "spam":
-                $criteria->condition = 'recipient_id = ' . Yii::app()->user->id;
-                $criteria->addCondition("is_spam = " . self::SPAM);
-                $criteria->addCondition("recipient_del = " . self::NOT_DROP);
-                break;
-            case "drop":
-                $criteria->condition = 'recipient_id = ' . Yii::app()->user->id;
-                $criteria->addCondition("recipient_del = " . self::DROP);
-                break;
-        }
+        $criteria->condition = 'sender_id = ' . Yii::app()->user->id;
+        $criteria->addCondition("sender_del = " . self::NOT_DROP);
+        $criteria->with = array('recipient');
         $criteria->order='send_date DESC';
         $dataProvider=new CActiveDataProvider($this, array(
             'pagination'=>array(
-                'pageSize'=>3,
+                'pageSize'=>Yii::app()->controller->module->messagePerPage,
             ),
             'criteria'=>$criteria,
         ));
         return $dataProvider;
     }
-    public function getRelation($actionId) {
-        switch($actionId) {
-            case "outbox":
-                return $this->recipient;
-                break;
-            case "inbox":
-                return $this->sender;
-                break;
-        }
+
+    /**
+     * @return CActiveDataProvider
+     *
+     * Метод получения спама для администратора.
+     *
+     * Исп.: Message::model()->spamAdm;
+     */
+    public function getSpamAdm() {
+        $criteria = new CDbCriteria;
+        $criteria->addCondition("is_spam = " . self::SPAM);
+        $criteria->with = array('recipient', 'sender');
+        $criteria->order='send_date DESC';
+        $dataProvider=new CActiveDataProvider($this, array(
+            'pagination'=>array(
+                'pageSize'=>Yii::app()->controller->module->messagePerPage,
+            ),
+            'criteria'=>$criteria,
+        ));
+        return $dataProvider;
     }
+
+    /**
+     * @return bool
+     *
+     * Метод проверки, прочитано сообщение или нет.
+     *
+     * Исп:. $this->isRead;
+     */
     public function getIsRead() {
-        if($this->is_read!=0) {
+        if($this->is_read!=self::NOT_READ) {
             return true;
         }
         else {
+            return false;
+        }
+    }
+
+    /**
+     * @param $id
+     *
+     * @return bool
+     *
+     * Метод удаления отправленого сообщения
+     * Удаления как такового не происходит.
+     * Сообщение только помечается, как удалённое Отправителем.
+     */
+    public function removeOutbox($id) {
+        $message=$this->findByPk($id);
+        if($message->sender_id===Yii::app()->user->id) {
+            $message->sender_del=self::DROP;
+            $message->update();
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
+     * @param $id
+     *
+     * @return bool
+     *
+     * Метод удаления входящего сообщения.
+     * Удаления как такового не происходит.
+     * Сообщение только помечается, как удалённое получателем.
+     */
+    public function removeInbox($id) {
+        $message=$this->findByPk($id);
+        if($message->recipient_id===Yii::app()->user->id) {
+            $message->recipient_del=self::DROP;
+            $message->update();
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
+     * @param $id
+     *
+     * @return bool
+     *
+     * Метод пометки сообщения, как спам.
+     */
+    public function makeSpam($id) {
+        //Получаем сообщение по его ID.
+        $message=$this->findByPk($id);
+        //Проверяем, кто отмечает его, как спам.
+        if($message->recipient_id===Yii::app()->user->id) {
+            //Помечаем сообщение, как спам.
+            $message->is_spam=self::SPAM;
+            //Обновляем сообщение.
+            $message->update();
+            //Возвращаем успешное выполнение операции.
+            return true;
+        }
+        else {//Если его помечает кто то другой.
+            //Возвращаем провал операции.
             return false;
         }
     }

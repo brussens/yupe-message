@@ -15,6 +15,7 @@ use yupe\components\WebModule;
 
 class MessageModule extends WebModule
 {
+    public $messagePerPage = 20;
     // название модуля
     public function getName()
     {
@@ -27,7 +28,7 @@ class MessageModule extends WebModule
         return Yii::t('MessageModule.client', 'Модуль для организации приватных сообщений между пользователями');
     }
 
-    // автор модуля (Ваше Имя, название студии и т.п.)
+    // автор модуля
     public function getAuthor()
     {
         return Yii::t('MessageModule.client', 'Дмитрий Брусенский (BrusSENS)');
@@ -62,7 +63,7 @@ class MessageModule extends WebModule
 
     public function getVersion()
     {
-        return Yii::t('MessageModule.user', '0.1-alpha');
+        return Yii::t('MessageModule.user', '0.1beta-1');
     }
 
     public function getIcon()
@@ -84,22 +85,20 @@ class MessageModule extends WebModule
 		$this->setImport(array(
 			'message.models.*',
 			'message.components.*',
+            'message.forms.*',
 		));
 	}
 
     public function getAdminPageLink()
     {
-        return '/message/messageBackend/index';
+        return '/message/messageBackend/spam';
     }
 
     public function getNavigation()
     {
         return array(
-            array('label' => Yii::t('MessageModule.user', 'Users')),
-            array('icon' => 'list-alt', 'label' => Yii::t('MessageModule.user', 'Manage users'), 'url' => array('/user/userBackend/index')),
-            array('icon' => 'plus-sign', 'label' => Yii::t('MessageModule.user', 'Create user'), 'url' => array('/user/userBackend/create')),
-            array('label' => Yii::t('MessageModule.user', 'Tokens')),
-            array('icon' => 'list-alt', 'label' => Yii::t('MessageModule.user', 'Token list'), 'url' => array('/user/tokensBackend/index')),
+            array('label' => Yii::t('MessageModule.message', 'Spam')),
+            array('icon' => 'list-alt', 'label' => Yii::t('MessageModule.message', 'Spam list'), 'url' => array('/message/messageBackend/spam')),
         );
     }
 

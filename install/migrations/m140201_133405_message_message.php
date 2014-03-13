@@ -12,7 +12,7 @@
 class m140201_133405_message_message extends yupe\components\DbMigration
 {
     /**
-     * Функция настройки и создания таблицы:
+     * Метод настройки и создания таблицы:
      *
      * @return null
      **/
@@ -31,6 +31,7 @@ class m140201_133405_message_message extends yupe\components\DbMigration
                 'is_read'           => "BIT(1) NOT NULL DEFAULT b'0'",
                 'sender_del'        => "BIT(1) NOT NULL DEFAULT b'0'",
                 'recipient_del'     => "BIT(1) NOT NULL DEFAULT b'0'",
+				'reply_to'          => "INT(11) NULL DEFAULT NULL",
             ),
             $this->getOptions()
         );
@@ -42,7 +43,7 @@ class m140201_133405_message_message extends yupe\components\DbMigration
             '{{user_user}}', 'id', 'CASCADE', 'CASCADE');
     }
     /**
-     * Функция удаления таблицы:
+     * Метод удаления таблицы:
      *
      * @return null
      **/

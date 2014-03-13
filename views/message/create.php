@@ -1,29 +1,8 @@
-<?php
-/* @var $this MessageController */
-/* @var $model Message */
-/* @var $form CActiveForm */
+<?php $this->breadcrumbs=array(
+Yii::t('MessageModule.message', 'Messages')=>$this->createUrl('inbox/inbox'),
+Yii::t('MessageModule.message', 'Create message')
+);
 ?>
-<style>
-    .y-mess-list tr:hover {
-        cursor:pointer;
-    }
-    .y-mess-list tr td.y-mess-item-check input[type="checkbox"] {
-        margin-top:2px;
-        display:block;
-    }
-    .y-mess-list tr td.y-mess-item-check {
-        vertical-align: middle;
-    }
-    .y-mess-no-read {
-        background:#EBF4FB;
-    }
-    .y-mess-no-read:hover {
-        background:#e2e7ed !important;
-    }
-    .y-mess-view-main {
-        background:#efefef;
-    }
-</style>
 <div class="row">
     <div class="span2">
         <?php $this->widget(
@@ -56,9 +35,7 @@
                     'url'=>array('message/inbox'),
                 )
             ); ?>
-
             <?php $this->endWidget(); ?>
-
         </div>
     </div>
 </div>

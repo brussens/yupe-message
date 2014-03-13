@@ -16,7 +16,7 @@ $this->breadcrumbs=array(
                 'url'=>array('message/create'),
             )
         ); ?>
-        <hr />
+        <hr class="y-mess">
         <?php $this->widget(
             'application.modules.message.widgets.MessageMenu'
         );?>
