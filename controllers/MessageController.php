@@ -27,7 +27,7 @@ class MessageController extends BaseController {
             {
                 if($model->save()) {
                     Yii::app()->user->setFlash(
-                        YFlashMessages::SUCCESS_MESSAGE,
+                        yupe\widgets\YFlashMessages::SUCCESS_MESSAGE,
                         Yii::t('MessageModule.message', 'Message sent successfully!')
                     );
                     $this->redirect($this->createUrl('inbox/inbox'));//TODO: Сделать правильный редирект
