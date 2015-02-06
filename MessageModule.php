@@ -6,13 +6,13 @@
  * @link http://hoswac.ru
  * @copyright 2014 Hoswac ltd.
  * @package yupe.modules.message
- * @since 0.1-α
+ * @since 0.1α
  *
  */
 
 class MessageModule extends \yupe\components\WebModule
 {
-    const VERSION = '0.2-α';
+    const VERSION = '0.2.0α';
 
     public function getDependencies()
     {

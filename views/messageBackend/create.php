@@ -1,4 +1,14 @@
 <?php
+/**
+ * create.php - backend create view.
+ *
+ * @author BrusSENS (Dmitry Brusenskiy) <brussens@hoswac.ru>
+ * @link http://hoswac.ru
+ * @copyright 2014 Hoswac ltd.
+ * @package yupe.modules.message.views.messageBackend
+ * @since 0.2.0α
+ *
+ */
 $this->pageTitle = Yii::t('MessageModule.message', 'Private messages - create message');
 
 $this->breadcrumbs = array(

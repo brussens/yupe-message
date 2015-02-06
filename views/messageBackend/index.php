@@ -1,4 +1,14 @@
 <?php
+/**
+ * index.php - backend index view.
+ *
+ * @author BrusSENS (Dmitry Brusenskiy) <brussens@hoswac.ru>
+ * @link http://hoswac.ru
+ * @copyright 2014 Hoswac ltd.
+ * @package yupe.modules.message.views.messageBackend
+ * @since 0.2.0α
+ *
+ */
 $this->breadcrumbs = array(
     Yii::t('MessageModule.message', 'Private messages') => array('/message/messageBackend/index'),
     Yii::t('MessageModule.message', 'Management'),

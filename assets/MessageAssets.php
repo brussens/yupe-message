@@ -5,8 +5,8 @@
  * @author BrusSENS (Dmitry Brusenskiy) <brussens@hoswac.ru>
  * @link http://hoswac.ru
  * @copyright 2014 Hoswac ltd.
- * @package yupe.modules.message.views.layouts
- * @since 0.2-α
+ * @package yupe.modules.message.assets
+ * @since 0.2.0α
  *
  */
 

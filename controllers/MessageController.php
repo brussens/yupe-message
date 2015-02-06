@@ -6,7 +6,7 @@
  * @link http://hoswac.ru
  * @copyright 2014 Hoswac ltd.
  * @package yupe.modules.message.controllers
- * @since 0.1-α
+ * @since 0.1α
  *
  */
 class MessageController extends yupe\components\controllers\FrontController

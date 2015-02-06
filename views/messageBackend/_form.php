@@ -1,4 +1,15 @@
 <?php
+/**
+ * _form.php - backend form view.
+ *
+ * @author BrusSENS (Dmitry Brusenskiy) <brussens@hoswac.ru>
+ * @link http://hoswac.ru
+ * @copyright 2014 Hoswac ltd.
+ * @package yupe.modules.message.views.messageBackend
+ * @since 0.2.0α
+ *
+ */
+
 $users = CHtml::listData(User::model()->findAll(), 'id', 'nick_name');
 $form = $this->beginWidget(
     'bootstrap.widgets.TbActiveForm',

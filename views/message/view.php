@@ -1,14 +1,14 @@
 <?php
 /**
-    * view.php - show message.
-    *
-    * @product Horex CMF
-    * @author Brusenskiy Dmitry <brussens@horexcmf.ru>
-    * @copyright 2015 Horex Copyright &copy;
-    * @license BSD http://ru.wikipedia.org/wiki/%D0%9B%D0%B8%D1%86%D0%B5%D0%BD%D0%B7%D0%B8%D1%8F_BSD
-    * @since 1.0.0
-    * @link http://hoswac.ru/horex
-*/
+ * view.php - message view file.
+ *
+ * @author BrusSENS (Dmitry Brusenskiy) <brussens@hoswac.ru>
+ * @link http://hoswac.ru
+ * @copyright 2014 Hoswac ltd.
+ * @package yupe.modules.message.views.message
+ * @since 0.1α
+ *
+ */
 
 if($model->getIsInbox()) {
     $user = $model->sender;
