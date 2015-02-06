@@ -12,14 +12,14 @@
 
 class MessageModule extends \yupe\components\WebModule
 {
-    const VERSION = '0.2-RC';
+    const VERSION = '0.2-α';
 
     public function getDependencies()
     {
-        return array(
+        return [
             'user',
             'notify'
-        );
+        ];
     }
 
     public function getAdminPageLink()
@@ -30,11 +30,15 @@ class MessageModule extends \yupe\components\WebModule
     public function getNavigation()
     {
         return [
-            ['label' => Yii::t('MessageModule.message', 'Messages')],
             [
                 'icon'  => 'fa fa-fw fa-list-alt',
-                'label' => Yii::t('MessageModule.message', 'Manage users'),
+                'label' => Yii::t('MessageModule.message', 'Messages list'),
                 'url'   => array('/message/messageBackend/index')
+            ],
+            [
+                'icon'  => 'fa fa-fw fa-plus-square',
+                'label' => Yii::t('MessageModule.message', 'Create message'),
+                'url'   => array('/message/messageBackend/create')
             ],
         ];
     }
@@ -91,13 +95,11 @@ class MessageModule extends \yupe\components\WebModule
 
     public function init()
     {
-        $this->setImport(
-            array(
+        $this->setImport([
                 'message.models.*',
                 'message.components.*',
                 'message.forms.*',
-            )
-        );
+        ]);
 
         parent::init();
     }
