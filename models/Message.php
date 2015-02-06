@@ -60,9 +60,11 @@ class Message extends yupe\models\YModel {
         return $this->is_read == self::STATUS_NEW;
     }
 
-    // TODO
     public function getHasAccess()
     {
-
+        if($this->sender_id === Yii::app()->user->id || $this->recipient_id === Yii::app()->user->id) {
+            return true;
+        }
+        return false;
     }
 }

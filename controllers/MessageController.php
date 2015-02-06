@@ -88,7 +88,7 @@ class MessageController extends yupe\components\controllers\FrontController
     {
         $model = Message::model()->findByPk($mid);
 
-        if(!$model) {
+        if(!$model || !$model->getHasAccess()) {
             throw new CHttpException(404, Yii::t('MessageModule.message', 'Such a message does not exist'));
         }
 
