@@ -33,12 +33,12 @@ class MessageModule extends \yupe\components\WebModule
             [
                 'icon'  => 'fa fa-fw fa-list-alt',
                 'label' => Yii::t('MessageModule.message', 'Messages list'),
-                'url'   => array('/message/messageBackend/index')
+                'url'   => ['/message/messageBackend/index']
             ],
             [
                 'icon'  => 'fa fa-fw fa-plus-square',
                 'label' => Yii::t('MessageModule.message', 'Create message'),
-                'url'   => array('/message/messageBackend/create')
+                'url'   => ['/message/messageBackend/create']
             ],
         ];
     }
