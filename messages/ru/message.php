@@ -25,4 +25,7 @@ return [
     'When you send an error occurred, please try again later' => 'При отправке возникла ошибка, попробуйте позже',
     'You' => 'Вы',
     'has written' => 'написали',
+    'Services' => 'Сервисы',
+    'Messages list' => 'Список сообщений',
+    'Create message' => 'Создать сообщение',
 ];

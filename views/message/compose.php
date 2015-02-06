@@ -39,22 +39,30 @@ $form = $this->beginWidget(
 <?php else: ?>
     <?php echo $form->hiddenField($model,'recipient',['type'=>"hidden"]); ?>
 <?php endif; ?>
-<?php echo $form->textAreaGroup($model, 'body',[
-    'label' => false,
-    'widgetOptions' => [
-        'htmlOptions' => [
-            'placeholder' => Yii::t('MessageModule.message', 'Enter your message text')
-        ],
-    ]
-]); ?>
-
-<?php $this->widget(
-    'bootstrap.widgets.TbButton',
-    [
-        'buttonType'  => 'submit',
-        'htmlOptions' => ['name' => 'submit-type', 'value' => 'index'],
-        'label'       => Yii::t('MessageModule.message', 'Send'),
-    ]
-); ?>
+<div class="row compose">
+    <div class="compose-thumb">
+        <img class="img-responsive img-rounded" src="<?php echo Yii::app()->user->getAvatar('150'); ?>" alt="<?php echo Yii::app()->user->nick_name; ?>" />
+    </div>
+    <div class="compose-textarea">
+        <?php echo $form->textAreaGroup($model, 'body',[
+            'label' => false,
+            'widgetOptions' => [
+                'htmlOptions' => [
+                    'placeholder' => Yii::t('MessageModule.message', 'Enter your message text')
+                ],
+            ]
+        ]); ?>
+    </div>
+</div>
+<div class="text-right">
+    <?php $this->widget(
+        'bootstrap.widgets.TbButton',
+        [
+            'buttonType'  => 'submit',
+            'htmlOptions' => ['name' => 'submit-type', 'value' => 'index'],
+            'label'       => Yii::t('MessageModule.message', 'Send'),
+        ]
+    ); ?>
+</div>
 
 <?php $this->endWidget(); ?>

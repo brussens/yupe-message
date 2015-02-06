@@ -17,7 +17,7 @@ else {
     $user = $model->recipient;
 }
 ?>
-<div class="row">
+<div class="row message-view-wrapper">
     <div class="col-sm-2">
         <a href="<?php echo Yii::app()->createUrl('/user/people/userInfo', ['username' => $user->nick_name]) ?>">
             <img class="img-responsive img-thumbnail" src="<?php echo $user->getAvatar('150'); ?>" alt="<?php echo $user->nick_name; ?>" />

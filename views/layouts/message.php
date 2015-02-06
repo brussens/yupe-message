@@ -13,7 +13,7 @@
 
 <?php
 // Registered Assets
-Yii::import('message.MessageAssets');
+Yii::import('message.assets.MessageAssets');
 (new MessageAssets())->publish();
 
 
