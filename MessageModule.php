@@ -1,54 +1,42 @@
 <?php
 /**
- * MessageModule основной класс модуля message
+ * Class Message - Message module mail class.
  *
- * @author BrusSENS <brusenskiydmitriy@gmail.com>
- * @link http://yupe.ru
- * @copyright 2014 BrusSENS
+ * @author BrusSENS (Dmitry Brusenskiy) <brussens@hoswac.ru>
+ * @link http://hoswac.ru
+ * @copyright 2014 Hoswac ltd.
  * @package yupe.modules.message
- * @since 0.6-beta
+ * @since 0.1-α
  *
  */
 
-
-use yupe\components\WebModule;
-
-class MessageModule extends WebModule
+class MessageModule extends \yupe\components\WebModule
 {
-    public $messagePerPage = 20;
-    // название модуля
-    public function getName()
+    const VERSION = '0.2-RC';
+
+    public function getDependencies()
     {
-        return Yii::t('MessageModule.client', 'Приватные сообщения');
+        return array(
+            'user',
+            'notify'
+        );
     }
 
-    // описание модуля
-    public function getDescription()
+    public function getAdminPageLink()
     {
-        return Yii::t('MessageModule.client', 'Модуль для организации приватных сообщений между пользователями');
+        return '/message/messageBackend/index';
     }
 
-    // автор модуля
-    public function getAuthor()
+    public function getNavigation()
     {
-        return Yii::t('MessageModule.client', 'Дмитрий Брусенский (BrusSENS)');
-    }
-
-    // контактный email автора
-    public function getAuthorEmail()
-    {
-        return Yii::t('MessageModule.client', 'brussens@hoswac.com');
-    }
-
-    // сайт автора или страничка модуля
-    public function getUrl()
-    {
-        return Yii::t('MessageModule.client', 'http://hoswac.com');
-    }
-
-    public function getCategory()
-    {
-        return Yii::t('MessageModule.client', 'Сервисы');
+        return [
+            ['label' => Yii::t('MessageModule.message', 'Messages')],
+            [
+                'icon'  => 'fa fa-fw fa-list-alt',
+                'label' => Yii::t('MessageModule.message', 'Manage users'),
+                'url'   => array('/message/messageBackend/index')
+            ],
+        ];
     }
 
     public function getIsInstallDefault()
@@ -61,58 +49,56 @@ class MessageModule extends WebModule
         return false;
     }
 
+    public function getName()
+    {
+        return Yii::t('MessageModule.message', 'Private messages');
+    }
+
+    public function getCategory()
+    {
+        return Yii::t('MessageModule.message', 'Services');
+    }
+
+    public function getDescription()
+    {
+        return Yii::t('MessageModule.message', 'Module for private messages between users');
+    }
+
+    public function getAuthor()
+    {
+        return 'BrusSENS';
+    }
+
+    public function getAuthorEmail()
+    {
+        return 'brussens@hoswac.ru';
+    }
+
+    public function getUrl()
+    {
+        return 'http://hoswac.ru';
+    }
+
     public function getVersion()
     {
-        return Yii::t('MessageModule.user', '0.1beta-1');
+        return self::VERSION;
     }
 
     public function getIcon()
     {
-        return 'envelope';
+        return 'fa fa-fw fa-envelope';
     }
 
-    public function getDependencies()
+    public function init()
     {
-        return array('user');
-    }
-
-	public function init()
-	{
-		parent::init();
-		
-		// this method is called when the module is being created
-		// you may place code here to customize the module or the application
-
-		// import the module-level models and components
-		$this->setImport(array(
-			'message.models.*',
-			'message.components.*',
-            		'message.forms.*',
-		));
-	}
-
-    public function getAdminPageLink()
-    {
-        return '/message/messageBackend/spam';
-    }
-
-    public function getNavigation()
-    {
-        return array(
-            array('label' => Yii::t('MessageModule.message', 'Spam')),
-            array('icon' => 'list-alt', 'label' => Yii::t('MessageModule.message', 'Spam list'), 'url' => array('/message/messageBackend/spam')),
+        $this->setImport(
+            array(
+                'message.models.*',
+                'message.components.*',
+                'message.forms.*',
+            )
         );
-    }
 
-	public function beforeControllerAction($controller, $action)
-	{
-		if(parent::beforeControllerAction($controller, $action))
-		{
-			// this method is called before any module controller action is performed
-			// you may place customized code here
-			return true;
-		}
-		else
-			return false;
-	}
+        parent::init();
+    }
 }

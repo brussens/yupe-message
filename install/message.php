@@ -1,32 +1,24 @@
 <?php
 /**
- * Файл конфигурации модуля message
+ * Module configuration file.
  *
- * @author BrusSENS <brusenskiydmitriy@gmail.com>
- * @link http://yupe.ru
- * @copyright 2014 BrusSENS
- * @package yupe.modules.message
- * @since 0.6-beta
+ * @author BrusSENS (Dmitry Brusenskiy) <brussens@hoswac.ru>
+ * @link http://hoswac.ru
+ * @copyright 2014 Hoswac ltd.
+ * @package yupe.modules.message.install
+ * @since 0.1-α
  *
  */
-return array(
-    'module'   => array(
-        'class'  => 'application.modules.message.MessageModule',
-    ),
-    'import'    => array(
-        'application.modules.message.models.*',
-        'application.modules.message.components.*',
-    ),
-    'component' => array(),
-
-    'rules'     => array(
-        '/messages/inbox'=> 'message/inbox/inbox',
-        '/messages/outbox'=> 'message/outbox/outbox',
-        '/message/create'=> 'message/message/create',
-        '/message/inbox/message<message_id>'=> 'message/inbox/view',
-        '/message/outbox/message<message_id>'=> 'message/outbox/view',
-        '/message/outbox/remove/message<message_id>'=> 'message/outbox/remove',
-        '/message/inbox/remove/message<message_id>'=> 'message/inbox/remove',
-        '/message/itspam/message<message_id>'=> 'message/inbox/makeSpam',
-    ),
-);
+return [
+    'module'=>[
+        'class'=>'application.modules.message.MessageModule'
+    ],
+    'import'=>[],
+    'component'=>[],
+    'rules'=>[
+        '/inbox' => 'message/message/inbox',
+        '/outbox' => 'message/message/outbox',
+        '/compose' => 'message/message/compose',
+        '/pm<mid:\d+>' => 'message/message/view',
+    ],
+];
