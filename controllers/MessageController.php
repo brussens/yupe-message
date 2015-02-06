@@ -124,7 +124,8 @@ class MessageController extends yupe\components\controllers\FrontController
         }
 
         if($model->getIsNew() && $model->getIsInbox()) {
-            $model->saveCounters(['is_read' => Message::STATUS_READ]);
+            $model->is_read = Message::STATUS_READ;
+            $model->update(['is_read']);
         }
 
         $this->render('view', [
