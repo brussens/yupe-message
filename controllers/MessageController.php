@@ -14,6 +14,37 @@ class MessageController extends yupe\components\controllers\FrontController
 
     public $layout = '/layouts/message';
 
+    public function filters()
+    {
+        return [
+            'accessControl',
+        ];
+    }
+
+    public function accessRules()
+    {
+        return [
+            ['deny',
+                'actions' => [
+                    'inbox',
+                    'outbox',
+                    'compose',
+                    'view',
+                ],
+                'users' => ['?'],
+            ],
+            ['allow',
+                'actions' => [
+                    'inbox',
+                    'outbox',
+                    'compose',
+                    'view',
+                ],
+                'users' => ['@'],
+            ],
+        ];
+    }
+
     public function actionInbox()
     {
 
