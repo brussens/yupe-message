@@ -34,6 +34,12 @@
     font-size:12px;
     position:relative;
 
+    table {
+      td {
+        height:50px;
+      }
+    }
+
     &:hover, &:focus, &:active {
       border:1px solid #efefef;
       cursor:pointer;
@@ -74,6 +80,24 @@
     .message-preview-body {
       padding:5px 15px;
       border-radius:7px;
+      overflow:hidden;
+      max-height:100%;
+      &:before,
+      &:after {
+        content: " "; /* 1 */
+        display: table; /* 2 */
+      }
+
+      &:after {
+        clear: both;
+      }
+      .hide-image {
+        color: #ffffff;
+        background:#67809f;
+        font-size:12px;
+        padding:3px 6px;
+        border-radius:3px;
+      }
     }
 
     &.hot {

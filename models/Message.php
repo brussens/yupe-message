@@ -39,6 +39,27 @@ class Message extends yupe\models\YModel {
         return '{{message_message}}';
     }
 
+    public function attributeLabels()
+    {
+        return[
+            'id' => Yii::t('MessageModule.message', 'ID'),
+            'sent_at' => Yii::t('MessageModule.message', 'Sent date'),
+            'recipient_id' => Yii::t('MessageModule.message', 'Recipient'),
+            'sender_id' => Yii::t('MessageModule.message', 'Sender'),
+            'body' => Yii::t('MessageModule.message', 'Body'),
+            'is_read' => Yii::t('MessageModule.message', 'Read'),
+        ];
+    }
+
+    public function rules()
+    {
+        return [
+            ['sender_id, recipient_id, body', 'required'],
+            ['sent_at, is_read', 'safe'],
+            ['sender_id, recipient_id', 'safe', 'on' => 'search'],
+        ];
+    }
+
     /**
      * @return array
      */
@@ -66,5 +87,39 @@ class Message extends yupe\models\YModel {
             return true;
         }
         return false;
+    }
+
+    public function getStatusList()
+    {
+        return [
+            self::STATUS_NEW => Yii::t('MessageModule.message', 'No'),
+            self::STATUS_READ => Yii::t('MessageModule.message', 'Yes'),
+        ];
+    }
+
+    public function getStatus()
+    {
+        return $this->getStatusList()[$this->is_read];
+    }
+
+    public function search($pageSize = 10)
+    {
+        $criteria = new CDbCriteria();
+
+        $criteria->compare('t.id', $this->id);
+        $criteria->compare('t.sent_at', $this->sent_at, true);
+        $criteria->compare('t.sender_id', $this->sender_id, true);
+        $criteria->compare('t.recipient_id', $this->recipient_id, true);
+        $criteria->with = ['sender', 'recipient'];
+
+        return new CActiveDataProvider(get_class($this), array(
+            'criteria'   => $criteria,
+            'pagination' => array(
+                'pageSize' => $pageSize,
+            ),
+            'sort'       => array(
+                'defaultOrder' => 'sent_at DESC',
+            )
+        ));
     }
 }

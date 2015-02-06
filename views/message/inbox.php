@@ -10,6 +10,13 @@
  *
  */
 ?>
+<script>
+    /*$(document).ready(function(){
+        $('.message-preview-item').on('hover', function(){
+            alert($(this).css('height'));
+        });
+    });*/
+</script>
 <div class="row">
     <?php
     $this->widget('zii.widgets.CListView', [
