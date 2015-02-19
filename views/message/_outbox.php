@@ -24,9 +24,12 @@
     <table>
         <tr>
             <td>
-                <a href="<?php echo Yii::app()->createUrl('/user/people/userInfo', ['username' => $data->recipient->nick_name]) ?>">
-                    <img class="img-responsive" src="<?php echo $data->recipient->getAvatar('50'); ?>" alt="<?php echo $data->recipient->nick_name; ?>" />
-                </a>
+                <?php echo CHtml::link(CHtml::image($data->recipient->getAvatar(50, 50), $data->recipient->nick_name, [
+                    'height' => '50px',
+                    'class' => 'img-responsive'
+                ]),[
+                    '/user/people/userInfo', 'username' => $data->recipient->nick_name
+                ]); ?>
             </td>
             <td class="message-preview-info">
                 <div>

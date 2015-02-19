@@ -32,9 +32,13 @@
     <table>
         <tr>
             <td>
-                <a href="<?php echo Yii::app()->createUrl('/user/people/userInfo', ['username' => $data->sender->nick_name]) ?>">
-                    <img class="img-responsive" src="<?php echo $data->sender->getAvatar('50'); ?>" alt="<?php echo $data->sender->nick_name; ?>" />
-                </a>
+
+                <?php echo CHtml::link(CHtml::image($data->sender->getAvatar(50, 50), $data->sender->nick_name, [
+                    'height' => '50px',
+                    'class' => 'img-responsive'
+                ]),[
+                    '/user/people/userInfo', 'username' => $data->sender->nick_name
+                ]); ?>
             </td>
             <td class="message-preview-info">
                 <div>
