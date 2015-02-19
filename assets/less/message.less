@@ -1,4 +1,12 @@
 /** LEFT NAVIGATION **/
+
+/* Micro ClearFix Mixin */
+.clearfix{
+  zoom:1;
+  &:before, &:after{ content:""; display:table; }
+  &:after{ clear: both; }
+}
+
 #message-nav {
   & > li {
     & > a {
@@ -44,23 +52,28 @@
       border:1px solid #efefef;
       cursor:pointer;
       background:#f5f5f5;
-      & > .message-preview-remove {
+      & > .message-preview-actions {
         display:block;
       }
     }
 
-    .message-preview-remove {
-      display:none;
+    .message-preview-action {
       background:none;
       border:none;
-      position:absolute;
-      top:5px;
-      right:10px;
       font-size:18px;
       color:#aaaaaa;
+      margin:0 5px;
       &:hover, &:focus, &:active {
         color: #d9534f;
       }
+    }
+
+    .message-preview-actions {
+      .clearfix;
+      display:none;
+      position:absolute;
+      top:5px;
+      right:10px;
     }
 
     & + .message-preview-item {

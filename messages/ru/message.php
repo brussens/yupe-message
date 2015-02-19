@@ -2,9 +2,9 @@
 /**
  * message.php - Russian localization module file.
  *
- * @author BrusSENS (Dmitry Brusenskiy) <brussens@hoswac.ru>
- * @link http://hoswac.ru
- * @copyright 2014 Hoswac ltd.
+ * @author BrusSENS (Dmitry Brusenskiy) <brussens@nativeweb.ru>
+ * @link http://nativeweb.ru
+ * @copyright 2014 Native Web.
  * @package yupe.modules.message.messages.ru
  * @since 0.1α
  *
@@ -65,5 +65,16 @@ return [
     'Message has been changed' => 'Сообщение сохранено',
     'Message has been removed' => 'Сообщение удалено',
     'You can\'t make this changes' => 'Невозможно применить изменения',
-    'Bad request. Please don\'t use similar requests anymore' => 'Неверный запрос. Пожалуйста, не используйте подобные запросы'
+    'Bad request. Please don\'t use similar requests anymore' => 'Неверный запрос. Пожалуйста, не используйте подобные запросы',
+    'Spam' => 'Спам',
+    'Is spam' => 'Это спам',
+    'Is not spam' => 'Это не спам',
+    'Delete' => 'Удалить',
+    'This message already removed' => 'Это сообщение уже было удалено',
+    'Message has been removed successfully' => 'Сообщение успешно удалено',
+    'When you remove an error occurred, please try again later' => 'При удалении произошла ошибка, попробуйте повторить запрос позже',
+    'Message marked as spam successfully' => 'Сообщение помечено как спам успешно',
+    'When you marked message as spam an error occurred, please try again later' => 'При пометке сообщения как спам произошла ошибка, попробуйте повторить запрос позже',
+    'Message marked as not spam successfully' => 'Сообщение помечено как не спам успешно',
+    'When you marked message as not spam an error occurred, please try again later' => 'При пометке сообщения как не спам произошла ошибка, попробуйте повторить запрос позже',
 ];

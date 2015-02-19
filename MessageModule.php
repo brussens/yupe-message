@@ -2,9 +2,9 @@
 /**
  * Class Message - Message module mail class.
  *
- * @author BrusSENS (Dmitry Brusenskiy) <brussens@hoswac.ru>
- * @link http://hoswac.ru
- * @copyright 2014 Hoswac ltd.
+ * @author BrusSENS (Dmitry Brusenskiy) <brussens@nativeweb.ru>
+ * @link http://nativeweb.ru
+ * @copyright 2014 Native Web.
  * @package yupe.modules.message
  * @since 0.1α
  *
@@ -12,7 +12,9 @@
 
 class MessageModule extends \yupe\components\WebModule
 {
-    const VERSION = '0.2.0α';
+    const VERSION = '0.2.0β';
+
+    public $censure = true;
 
     public function getDependencies()
     {
@@ -75,12 +77,12 @@ class MessageModule extends \yupe\components\WebModule
 
     public function getAuthorEmail()
     {
-        return 'brussens@hoswac.ru';
+        return 'brussens@nativeweb.ru';
     }
 
     public function getUrl()
     {
-        return 'http://hoswac.ru';
+        return 'http://nativeweb.ru';
     }
 
     public function getVersion()

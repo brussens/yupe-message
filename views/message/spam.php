@@ -1,6 +1,6 @@
 <?php
 /**
- * inbox.php - inbox message view file.
+ * spam.php - spam messages view file.
  *
  * @author BrusSENS (Dmitry Brusenskiy) <brussens@nativeweb.ru>
  * @link http://nativeweb.ru
@@ -21,7 +21,7 @@
     <?php
     $this->widget('zii.widgets.CListView', [
         'dataProvider' => $dataProvider,
-        'itemView' => '_inbox',
+        'itemView' => '_spam',
         'template' => "{items}\n{pager}",
     ]);
     ?>

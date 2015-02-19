@@ -2,9 +2,9 @@
 /**
  * Class MessageAssets - register module assets.
  *
- * @author BrusSENS (Dmitry Brusenskiy) <brussens@hoswac.ru>
- * @link http://hoswac.ru
- * @copyright 2014 Hoswac ltd.
+ * @author BrusSENS (Dmitry Brusenskiy) <brussens@nativeweb.ru>
+ * @link http://nativeweb.ru
+ * @copyright 2014 Native Web.
  * @package yupe.modules.message.assets
  * @since 0.2.0α
  *
@@ -17,12 +17,15 @@ class MessageAssets
     const PACKAGE_ID = 'Message-module';
 
     public $css = [
-        'css/message.css'
+        'css/message.css',
+        'emoji/jquery.emojiarea.css'
     ];
 
     public $js = [
         'js/moment/moment.min.js',
-        'js/timeago.js'
+        'js/timeago.js',
+        'emoji/jquery.emojiarea.min.js',
+        'emoji/packs/basic/emojis.js'
     ];
 
     public $depends = [
@@ -45,6 +48,7 @@ class MessageAssets
             ->registerScript(
                 $this->getId(),
                 'jQuery(".timeago").dateFormat();
+
                 jQuery("[data-action=\"data-href\"]").on("click", function(){
                     window.location=$(this).attr("data-href");
                 });',

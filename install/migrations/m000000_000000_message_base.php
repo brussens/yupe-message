@@ -3,9 +3,9 @@
 /**
  * Class m000000_000000_message_base - migrations class {{message_message}} table.
  *
- * @author BrusSENS (Dmitry Brusenskiy) <brussens@hoswac.ru>
- * @link http://hoswac.ru
- * @copyright 2014 Hoswac ltd.
+ * @author BrusSENS (Dmitry Brusenskiy) <brussens@nativeweb.ru>
+ * @link http://nativeweb.ru
+ * @copyright 2014 Native Web.
  * @package yupe.modules.message.install.migrations
  * @since 0.2.0α
  *
@@ -32,6 +32,7 @@ class m000000_000000_message_base extends yupe\components\DbMigration
                 'is_read' => 'integer NOT NULL',
                 'sender_del' => 'integer NOT NULL',
                 'recipient_del' => 'integer NOT NULL',
+                'is_spam' => 'integer NOT NULL',
             ],
             $this->getOptions()
         );

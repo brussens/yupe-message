@@ -2,16 +2,25 @@
 /**
  * _outbox.php - outbox item view file.
  *
- * @author BrusSENS (Dmitry Brusenskiy) <brussens@hoswac.ru>
- * @link http://hoswac.ru
- * @copyright 2014 Hoswac ltd.
+ * @author BrusSENS (Dmitry Brusenskiy) <brussens@nativeweb.ru>
+ * @link http://nativeweb.ru
+ * @copyright 2014 Native Web.
  * @package yupe.modules.message.views.message
  * @since 0.1α
  *
  */
 ?>
-<div data-href="<?php echo Yii::app()->createUrl('/message/message/view', ['mid' => $data->id]); ?>" data-action="data-href" class="<?php echo ($data->getIsNew() ? 'hot ' : ''); ?>clearfix message-preview-item">
-    <a href="#remove" class="message-preview-remove"><i class="fa fa-times"></i></a>
+<div data-href="<?php echo Yii::app()->createUrl('/message/message/view', ['id' => $data->id]); ?>" data-action="data-href" class="<?php echo ($data->getIsNew() ? 'hot ' : ''); ?>clearfix message-preview-item">
+    <div class="message-preview-actions">
+        <?php echo CHtml::link('<i class="fa fa-times"></i>', ['/message/message/delete', 'id' => $data->id],
+            [
+                'class' => 'message-preview-action',
+                'data-toggle' => 'tooltip',
+                'data-placement' => 'top',
+                'title' => Yii::t('MessageModule.message', 'Delete')
+            ]
+        ); ?>
+    </div>
     <table>
         <tr>
             <td>

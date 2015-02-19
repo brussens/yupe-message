@@ -2,9 +2,9 @@
 /**
  * Module configuration file.
  *
- * @author BrusSENS (Dmitry Brusenskiy) <brussens@hoswac.ru>
- * @link http://hoswac.ru
- * @copyright 2014 Hoswac ltd.
+ * @author BrusSENS (Dmitry Brusenskiy) <brussens@nativeweb.ru>
+ * @link http://nativeweb.ru
+ * @copyright 2014 Native Web.
  * @package yupe.modules.message.install
  * @since 0.1α
  *
@@ -18,7 +18,11 @@ return [
     'rules'=>[
         '/inbox' => 'message/message/inbox',
         '/outbox' => 'message/message/outbox',
+        '/spam' => 'message/message/spam',
         '/compose' => 'message/message/compose',
-        '/pm<mid:\d+>' => 'message/message/view',
+        '/pm<id:\d+>' => 'message/message/view',
+        '/pm<id:\d+>/remove' => 'message/message/delete',
+        '/pm<id:\d+>/spam/mark' => 'message/message/spamMark',
+        '/pm<id:\d+>/spam/unmark' => 'message/message/spamUnMark',
     ],
 ];

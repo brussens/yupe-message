@@ -1,10 +1,10 @@
 <?php
 /**
- * message.php - the module layout file.
+ * message.php - лайаут модуля.
  *
- * @author BrusSENS (Dmitry Brusenskiy) <brussens@hoswac.ru>
- * @link http://hoswac.ru
- * @copyright 2014 Hoswac ltd.
+ * @author BrusSENS (Dmitry Brusenskiy) <brussens@nativeweb.ru>
+ * @link http://nativeweb.ru
+ * @copyright 2014 Native Web.
  * @package yupe.modules.message.views.layouts
  * @since 0.2.0α
  *
@@ -12,7 +12,7 @@
 ?>
 
 <?php
-// Registered Assets
+// Регистрация ресурсов.
 Yii::import('message.assets.MessageAssets');
 (new MessageAssets())->publish();
 
@@ -20,19 +20,30 @@ Yii::import('message.assets.MessageAssets');
 // Scan new messages
 $inboxCounter = false;
 $outboxCounter = false;
+$spamCounter = false;
 $inbox = Message::model()->countByAttributes([
     'recipient_id' => Yii::app()->getUser()->getId(),
-    'is_read' => Message::STATUS_NEW
+    'is_read' => Message::STATUS_NEW,
+    'recipient_del' => Message::NOT_DELETED
 ]);
 $outbox = Message::model()->countByAttributes([
     'sender_id' => Yii::app()->getUser()->getId(),
-    'is_read' => Message::STATUS_NEW
+    'is_read' => Message::STATUS_NEW,
+    'sender_del' => Message::NOT_DELETED
+]);
+$spam = Message::model()->countByAttributes([
+    'recipient_id' => Yii::app()->getUser()->getId(),
+    'recipient_del' => Message::NOT_DELETED,
+    'is_spam' => Message::SPAM,
 ]);
 if($inbox) {
     $inboxCounter = '<span class="label pull-right">'.$inbox.'</span>';
 }
 if($outbox) {
     $outboxCounter = '<span class="label pull-right">'.$outbox.'</span>';
+}
+if($spam) {
+    $spamCounter = '<span class="label pull-right">'.$spam.'</span>';
 }
 ?>
 <?php $this->beginContent('//layouts/main'); ?>
@@ -54,6 +65,10 @@ if($outbox) {
                 [
                     'label' => Yii::t('MessageModule.message', 'Outbox').$outboxCounter,
                     'url' => ['/message/message/outbox'],
+                ],
+                [
+                    'label' => Yii::t('MessageModule.message', 'Spam').$spamCounter,
+                    'url' => ['/message/message/spam'],
                 ],
             ]
         ]); ?>

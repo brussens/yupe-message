@@ -2,9 +2,9 @@
 /**
  * compose.php - new message form.
  *
- * @author BrusSENS (Dmitry Brusenskiy) <brussens@hoswac.ru>
- * @link http://hoswac.ru
- * @copyright 2014 Hoswac ltd.
+ * @author BrusSENS (Dmitry Brusenskiy) <brussens@nativeweb.ru>
+ * @link http://nativeweb.ru
+ * @copyright 2014 Native Web.
  * @package yupe.modules.message.views.message
  * @since 0.1α
  *
@@ -48,7 +48,8 @@ $form = $this->beginWidget(
             'label' => false,
             'widgetOptions' => [
                 'htmlOptions' => [
-                    'placeholder' => Yii::t('MessageModule.message', 'Enter your message text')
+                    'placeholder' => Yii::t('MessageModule.message', 'Enter your message text'),
+                    'class' => 'emoji-widget'
                 ],
             ]
         ]); ?>

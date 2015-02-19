@@ -1,6 +1,6 @@
 <?php
 /**
- * _inbox.php - inbox item view file.
+ * _spam.php - spam item view file.
  *
  * @author BrusSENS (Dmitry Brusenskiy) <brussens@nativeweb.ru>
  * @link http://nativeweb.ru
@@ -12,12 +12,12 @@
 ?>
 <div data-href="<?php echo Yii::app()->createUrl('/message/message/view', ['id' => $data->id]); ?>" data-action="data-href" class="<?php echo ($data->getIsNew() ? 'hot ' : ''); ?>clearfix message-preview-item">
     <div class="message-preview-actions">
-        <?php echo CHtml::link('<i class="fa fa-gavel"></i>', ['/message/message/spamMark', 'id' => $data->id],
+        <?php echo CHtml::link('<i class="fa fa-life-ring"></i>', ['/message/message/spamUnMark', 'id' => $data->id],
             [
                 'class' => 'message-preview-action',
                 'data-toggle' => 'tooltip',
                 'data-placement' => 'top',
-                'title' => Yii::t('MessageModule.message', 'Is spam')
+                'title' => Yii::t('MessageModule.message', 'Is not spam')
             ]
         ); ?>
         <?php echo CHtml::link('<i class="fa fa-times"></i>', ['/message/message/delete', 'id' => $data->id],

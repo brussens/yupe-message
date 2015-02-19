@@ -2,9 +2,9 @@
 /**
  * Class Message - the model {{message_message}} table.
  *
- * @author BrusSENS (Dmitry Brusenskiy) <brussens@hoswac.ru>
- * @link http://hoswac.ru
- * @copyright 2014 Hoswac ltd.
+ * @author BrusSENS (Dmitry Brusenskiy) <brussens@nativeweb.ru>
+ * @link http://nativeweb.ru
+ * @copyright 2014 Native Web.
  * @package yupe.modules.message.models
  * @since 0.1α
  *
@@ -18,9 +18,14 @@ class Message extends yupe\models\YModel {
     // status not read
     const STATUS_NEW = 2;
 
-    const NOT_DELETED = 2;
+    const NOT_DELETED = 1;
 
     const DELETED = 2;
+
+    const NOT_SPAM = 1;
+
+    const SPAM = 2;
+
 
     /**
      * @param null|string $className
@@ -39,6 +44,9 @@ class Message extends yupe\models\YModel {
         return '{{message_message}}';
     }
 
+    /**
+     * @return array
+     */
     public function attributeLabels()
     {
         return[
@@ -51,6 +59,9 @@ class Message extends yupe\models\YModel {
         ];
     }
 
+    /**
+     * @return array
+     */
     public function rules()
     {
         return [
@@ -71,16 +82,38 @@ class Message extends yupe\models\YModel {
         ];
     }
 
+    /**
+     * Сообщение входящее
+     *
+     * @return bool
+     */
     public function getIsInbox()
     {
         return Yii::app()->user->id === $this->recipient_id;
     }
 
+    /**
+     * Сообщение исходящее.
+     *
+     * @return bool
+     */
+    public function getIsOutbox()
+    {
+        return Yii::app()->user->id === $this->sender_id;
+    }
+
+    /**
+     * @return bool
+     */
     public function getIsNew()
     {
         return $this->is_read == self::STATUS_NEW;
     }
 
+    /**
+     * Проверка доступа к сообщению.
+     * @return bool
+     */
     public function getHasAccess()
     {
         if($this->sender_id === Yii::app()->user->id || $this->recipient_id === Yii::app()->user->id) {
@@ -89,6 +122,11 @@ class Message extends yupe\models\YModel {
         return false;
     }
 
+    /**
+     * Список статусов.
+     *
+     * @return array
+     */
     public function getStatusList()
     {
         return [
@@ -97,11 +135,29 @@ class Message extends yupe\models\YModel {
         ];
     }
 
+    /**
+     * Получение статуса сообщения
+     *
+     * @return mixed
+     */
     public function getStatus()
     {
         return $this->getStatusList()[$this->is_read];
     }
 
+    /**
+     * Проверка сообщения на статус спама.
+     * @return bool
+     */
+    public function getIsSpam()
+    {
+        return $this->is_spam == self::SPAM;
+    }
+
+    /**
+     * @param int $pageSize
+     * @return CActiveDataProvider
+     */
     public function search($pageSize = 10)
     {
         $criteria = new CDbCriteria();
