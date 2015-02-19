@@ -134,7 +134,7 @@ class MessageController extends yupe\components\controllers\FrontController
                     yupe\widgets\YFlashMessages::SUCCESS_MESSAGE,
                     Yii::t('MessageModule.message', 'Your message has been sent successfully')
                 );
-                $this->redirect(['/message/message/inbox']);
+                $this->redirect(['/message/message/outbox']);
             }
             else {
                 Yii::app()->getUser()->setFlash(
