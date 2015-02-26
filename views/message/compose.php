@@ -9,7 +9,6 @@
  * @since 0.1α
  *
  */
-
 $form = $this->beginWidget(
     'bootstrap.widgets.TbActiveForm',
     [
@@ -44,20 +43,20 @@ $form = $this->beginWidget(
         <img class="img-responsive img-rounded" src="<?php echo Yii::app()->user->getAvatar('150'); ?>" alt="<?php echo Yii::app()->user->nick_name; ?>" />
     </div>
     <div class="compose-textarea">
-        <?php echo $form->textAreaGroup($model, 'body',[
-            'label' => false,
-            'widgetOptions' => [
-                'htmlOptions' => [
-                    'placeholder' => Yii::t('MessageModule.message', 'Enter your message text'),
-                    'class' => 'emoji-widget'
-                ],
+        <?php
+        $this->widget('yupe\widgets\editors\Textarea',[
+            'model' => $model,
+            'attribute' => 'body',
+            'options' => [
+                'placeholder' => Yii::t('MessageModule.message', 'Enter your message text'),
+                'class' => 'emoji-widget'
             ]
-        ]); ?>
+        ]);
+        ?>
     </div>
 </div>
 <div class="text-right">
-    <?php $this->widget(
-        'bootstrap.widgets.TbButton',
+    <?php $this->widget('booster.widgets.TbButton',
         [
             'buttonType'  => 'submit',
             'htmlOptions' => ['name' => 'submit-type', 'value' => 'index'],
