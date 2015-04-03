@@ -67,26 +67,8 @@ class MessageController extends yupe\components\controllers\FrontController
      */
     public function actionInbox()
     {
-
-        $dataProvider=new CActiveDataProvider('Message', [
-            'criteria' => [
-                'condition' => 'recipient_id = :user_id AND recipient_del = :recipient_del AND is_spam = :is_spam',
-                'params' => [
-                    ':user_id' => Yii::app()->getUser()->getId(),
-                    ':recipient_del' => Message::NOT_DELETED,
-                    ':is_spam' => Message::NOT_SPAM,
-                ],
-                'order' => 'sent_at DESC',
-                'with' => ['sender'],
-            ],
-
-            'pagination' => [
-                'pageSize' => 20,
-            ],
-        ]);
-
         $this->render('inbox', [
-            'dataProvider' => $dataProvider
+            'dataProvider' => Message::inbox()
         ]);
     }
 
@@ -95,25 +77,8 @@ class MessageController extends yupe\components\controllers\FrontController
      */
     public function actionOutbox()
     {
-
-        $dataProvider=new CActiveDataProvider('Message', [
-            'criteria' => [
-                'condition' => 'sender_id = :user_id AND sender_del = :sender_del',
-                'params' => [
-                    ':user_id' => Yii::app()->getUser()->getId(),
-                    ':sender_del' => Message::NOT_DELETED,
-                ],
-                'order' => 'sent_at DESC',
-                'with' => ['recipient'],
-            ],
-
-            'pagination' => [
-                'pageSize' => 20,
-            ],
-        ]);
-
         $this->render('outbox', [
-            'dataProvider' => $dataProvider
+            'dataProvider' => Message::outbox()
         ]);
     }
 
@@ -162,12 +127,7 @@ class MessageController extends yupe\components\controllers\FrontController
         if(!$model || !$model->getHasAccess()) {
             throw new CHttpException(404, Yii::t('MessageModule.message', 'Such a message does not exist'));
         }
-
-        if($model->getIsNew() && $model->getIsInbox()) {
-            $model->is_read = Message::STATUS_READ;
-            $model->update(['is_read']);
-        }
-
+        $model->markAsRead();
         $this->render('view', [
             'model' => $model
         ]);
@@ -187,35 +147,7 @@ class MessageController extends yupe\components\controllers\FrontController
         if(!$model || !$model->getHasAccess()) {
             throw new CHttpException(404, Yii::t('MessageModule.message', 'Such a message does not exist'));
         }
-
-        if($model->getIsInbox()){
-            if($model->recipient_del === Message::DELETED) {
-                throw new CHttpException(404, Yii::t('MessageModule.message', 'This message already removed'));
-            }
-            else {
-                $model->recipient_del = Message::DELETED;
-            }
-        }
-        elseif($model->getIsOutbox()) {
-            if($model->sender_del === Message::DELETED) {
-                throw new CHttpException(404, Yii::t('MessageModule.message', 'This message already removed'));
-            }
-            else {
-                $model->sender_del = Message::DELETED;
-            }
-        }
-        if($model->update()) {
-            Yii::app()->getUser()->setFlash(
-                yupe\widgets\YFlashMessages::SUCCESS_MESSAGE,
-                Yii::t('MessageModule.message', 'Message has been removed successfully')
-            );
-        }
-        else {
-            Yii::app()->getUser()->setFlash(
-                yupe\widgets\YFlashMessages::ERROR_MESSAGE,
-                Yii::t('MessageModule.message', 'When you remove an error occurred, please try again later')
-            );
-        }
+        $model->markAsDelete();
         $this->redirect(Yii::app()->request->urlReferrer);
     }
 
@@ -224,25 +156,8 @@ class MessageController extends yupe\components\controllers\FrontController
      */
     public function actionSpam()
     {
-        $dataProvider=new CActiveDataProvider('Message', [
-            'criteria' => [
-                'condition' => 'recipient_id = :user_id AND recipient_del = :recipient_del AND is_spam = :is_spam',
-                'params' => [
-                    ':user_id' => Yii::app()->getUser()->getId(),
-                    ':recipient_del' => Message::NOT_DELETED,
-                    ':is_spam' => Message::SPAM,
-                ],
-                'order' => 'sent_at DESC',
-                'with' => ['sender'],
-            ],
-
-            'pagination' => [
-                'pageSize' => 20,
-            ],
-        ]);
-
         $this->render('spam', [
-            'dataProvider' => $dataProvider
+            'dataProvider' => Message::spamBox()
         ]);
     }
 
@@ -261,23 +176,7 @@ class MessageController extends yupe\components\controllers\FrontController
         if(!$model || !$model->getHasAccess()) {
             throw new CHttpException(404, Yii::t('MessageModule.message', 'Such a message does not exist'));
         }
-
-        if($model->getIsInbox() && !$model->getIsSpam()){
-            $model->is_spam = Message::SPAM;
-            if($model->update()) {
-                Yii::app()->getUser()->setFlash(
-                    yupe\widgets\YFlashMessages::SUCCESS_MESSAGE,
-                    Yii::t('MessageModule.message', 'Message marked as spam successfully')
-                );
-            }
-            else {
-                Yii::app()->getUser()->setFlash(
-                    yupe\widgets\YFlashMessages::ERROR_MESSAGE,
-                    Yii::t('MessageModule.message', 'When you marked message as spam an error occurred, please try again later')
-                );
-            }
-        }
-
+        $model->markAsSpam();
         $this->redirect(Yii::app()->request->urlReferrer);
     }
 
@@ -295,24 +194,7 @@ class MessageController extends yupe\components\controllers\FrontController
         if(!$model || !$model->getHasAccess()) {
             throw new CHttpException(404, Yii::t('MessageModule.message', 'Such a message does not exist'));
         }
-
-        if($model->getIsInbox() && $model->getIsSpam()){
-
-            $model->is_spam = Message::NOT_SPAM;
-
-            if($model->update()) {
-                Yii::app()->getUser()->setFlash(
-                    yupe\widgets\YFlashMessages::SUCCESS_MESSAGE,
-                    Yii::t('MessageModule.message', 'Message marked as not spam successfully')
-                );
-            }
-            else {
-                Yii::app()->getUser()->setFlash(
-                    yupe\widgets\YFlashMessages::ERROR_MESSAGE,
-                    Yii::t('MessageModule.message', 'When you marked message as not spam an error occurred, please try again later')
-                );
-            }
-        }
+        $model->markAsNotSpam();
         $this->redirect(Yii::app()->request->urlReferrer);
     }
 

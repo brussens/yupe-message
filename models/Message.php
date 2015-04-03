@@ -178,4 +178,190 @@ class Message extends yupe\models\YModel {
             )
         ));
     }
+
+    /**
+     * Помечает сообщение, как прочитанное.
+     *
+     * @throws CDbException
+     */
+    public function markAsRead()
+    {
+        if($this->getIsNew() && $this->getIsInbox()) {
+            $this->is_read = self::STATUS_READ;
+            $this->update(['is_read']);
+        }
+    }
+
+    /**
+     * Проверка, удалено ли сообщение отправителем
+     * @return bool
+     */
+    public function isSenderDeleted()
+    {
+        return $this->sender_del === self::DELETED;
+    }
+
+    /**
+     * Првоерка, удалено ли сообщение получателем.
+     * @return bool
+     */
+    public function isRecipientDeleted()
+    {
+        return $this->recipient_del === self::DELETED;
+    }
+
+    /**
+     * Помечает сообщение удалённым.
+     * @throws CHttpException
+     */
+    public function markAsDelete()
+    {
+        if($this->getIsInbox()){
+            if($this->isRecipientDeleted()) {
+                throw new CHttpException(404, Yii::t('MessageModule.message', 'This message already removed'));
+            }
+            else {
+                $this->recipient_del = self::DELETED;
+            }
+        }
+        elseif($this->getIsOutbox()) {
+            if($this->isSenderDeleted()) {
+                throw new CHttpException(404, Yii::t('MessageModule.message', 'This message already removed'));
+            }
+            else {
+                $this->sender_del = self::DELETED;
+            }
+        }
+        if($this->update()) {
+            Yii::app()->getUser()->setFlash(
+                yupe\widgets\YFlashMessages::SUCCESS_MESSAGE,
+                Yii::t('MessageModule.message', 'Message has been removed successfully')
+            );
+        }
+        else {
+            Yii::app()->getUser()->setFlash(
+                yupe\widgets\YFlashMessages::ERROR_MESSAGE,
+                Yii::t('MessageModule.message', 'When you remove an error occurred, please try again later')
+            );
+        }
+    }
+
+    /**
+     * Помечает сообщение, как спам.
+     * @throws CDbException
+     */
+    public function markAsSpam()
+    {
+        if($this->getIsInbox() && !$this->getIsSpam()){
+            $this->is_spam = self::SPAM;
+            if($this->update()) {
+                Yii::app()->getUser()->setFlash(
+                    yupe\widgets\YFlashMessages::SUCCESS_MESSAGE,
+                    Yii::t('MessageModule.message', 'Message marked as spam successfully')
+                );
+            }
+            else {
+                Yii::app()->getUser()->setFlash(
+                    yupe\widgets\YFlashMessages::ERROR_MESSAGE,
+                    Yii::t('MessageModule.message', 'When you marked message as spam an error occurred, please try again later')
+                );
+            }
+        }
+    }
+
+    /**
+     * Помечает сообщение, как не спам.
+     * @throws CDbException
+     */
+    public function markAsNotSpam()
+    {
+        if($this->getIsInbox() && $this->getIsSpam()){
+
+            $this->is_spam = self::NOT_SPAM;
+
+            if($this->update()) {
+                Yii::app()->getUser()->setFlash(
+                    yupe\widgets\YFlashMessages::SUCCESS_MESSAGE,
+                    Yii::t('MessageModule.message', 'Message marked as not spam successfully')
+                );
+            }
+            else {
+                Yii::app()->getUser()->setFlash(
+                    yupe\widgets\YFlashMessages::ERROR_MESSAGE,
+                    Yii::t('MessageModule.message', 'When you marked message as not spam an error occurred, please try again later')
+                );
+            }
+        }
+    }
+
+    /**
+     * Спам сообщения
+     * @return CActiveDataProvider
+     */
+    public static function spamBox()
+    {
+        return new CActiveDataProvider(__CLASS__, [
+            'criteria' => [
+                'condition' => 'recipient_id = :user_id AND recipient_del = :recipient_del AND is_spam = :is_spam',
+                'params' => [
+                    ':user_id' => Yii::app()->getUser()->getId(),
+                    ':recipient_del' => self::NOT_DELETED,
+                    ':is_spam' => self::SPAM,
+                ],
+                'order' => 'sent_at DESC',
+                'with' => ['sender'],
+            ],
+
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+        ]);
+    }
+
+    /**
+     * Отправленные сообщения
+     * @return CActiveDataProvider
+     */
+    public static function outbox()
+    {
+        return new CActiveDataProvider(__CLASS__, [
+            'criteria' => [
+                'condition' => 'sender_id = :user_id AND sender_del = :sender_del',
+                'params' => [
+                    ':user_id' => Yii::app()->getUser()->getId(),
+                    ':sender_del' => self::NOT_DELETED,
+                ],
+                'order' => 'sent_at DESC',
+                'with' => ['recipient'],
+            ],
+
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+        ]);
+    }
+
+    /**
+     * Входящие сообщения
+     * @return CActiveDataProvider
+     */
+    public static function inbox()
+    {
+        return new CActiveDataProvider(__CLASS__, [
+            'criteria' => [
+                'condition' => 'recipient_id = :user_id AND recipient_del = :recipient_del AND is_spam = :is_spam',
+                'params' => [
+                    ':user_id' => Yii::app()->getUser()->getId(),
+                    ':recipient_del' => self::NOT_DELETED,
+                    ':is_spam' => self::NOT_SPAM,
+                ],
+                'order' => 'sent_at DESC',
+                'with' => ['sender'],
+            ],
+
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+        ]);
+    }
 }
