@@ -70,7 +70,9 @@ $users = CHtml::listData(User::model()->findAll(), 'id', 'nick_name');
         ?>
     </div>
 
-<?php $this->widget(
+<?php
+$users = CHtml::listData(User::model()->findAll(), 'id', 'nick_name');
+$this->widget(
     'yupe\widgets\CustomGridView',
     array(
         'id'           => 'message-grid',
@@ -81,11 +83,13 @@ $users = CHtml::listData(User::model()->findAll(), 'id', 'nick_name');
             array(
                 'name'  => 'sender_id',
                 'type'  => 'raw',
+                'filter' => $users,
                 'value' => 'CHtml::link($data->sender->nick_name, array("/user/userBackend/view", "id" => $data->sender_id))',
             ),
             array(
                 'name'  => 'recipient_id',
                 'type'  => 'raw',
+                'filter' => $users,
                 'value' => 'CHtml::link($data->recipient->nick_name, array("/user/userBackend/view", "id" => $data->recipient_id))',
             ),
             array(
@@ -96,6 +100,7 @@ $users = CHtml::listData(User::model()->findAll(), 'id', 'nick_name');
             array(
                 'name'  => 'is_read',
                 'type'  => 'raw',
+                'filter' => $model->getStatusList(),
                 'value' => '$data->getStatus();',
             ),
             array(
